@@ -35,13 +35,12 @@ export default function DashboardHeader({ session }) {
         {/* Right Side */}
         <div className="flex items-center gap-4">
           {/* Search */}
-          <div className="hidden w-72 lg:block">
+          <div className="relative hidden w-72 lg:block">
+            <FaSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-gray-400" />
+
             <Input
               placeholder="Search books..."
-              startContent={
-                <FaSearch className="text-gray-400" />
-              }
-              radius="lg"
+              className="rounded-xl border border-gray-200 py-3 pl-11 pr-4 focus:border-violet-500 focus:outline-none"
             />
           </div>
 

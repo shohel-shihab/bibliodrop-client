@@ -11,11 +11,11 @@ export default async function DashboardPage() {
     redirect("/login");
   }
 
-  const role = session.user.role;
+  const role = session?.user?.role;
 
   switch (role) {
     case "reader":
-      redirect("/dashboard/user");
+      redirect("/dashboard/reader");
 
     case "librarian":
       redirect("/dashboard/librarian");

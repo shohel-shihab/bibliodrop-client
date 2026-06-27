@@ -71,13 +71,6 @@ export default function DashboardSidebar({
           href="/"
           className="flex items-center gap-3"
         >
-          <Image
-            src="/logo.webp"
-            alt="logo"
-            width={42}
-            height={42}
-          />
-
           <div>
             <h2 className="text-xl font-black text-violet-700">
               BiblioDrop
