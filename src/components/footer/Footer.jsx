@@ -1,4 +1,6 @@
+"use client"
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import {
   FaFacebookF,
   FaInstagram,
@@ -10,6 +12,11 @@ import { FiSend } from "react-icons/fi";
 
 export default function Footer() {
   const year = new Date().getFullYear();
+
+  const pathname=usePathname();
+  if(pathname.includes("dashboard")) {
+    return null
+  }
 
   return (
     <footer className="relative mt-24 overflow-hidden bg-slate-950 text-gray-300">

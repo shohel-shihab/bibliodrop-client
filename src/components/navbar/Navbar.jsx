@@ -38,6 +38,12 @@ import { navItems } from "./navItems";
 export default function Navbar() {
     const pathname = usePathname();
 
+    if(pathname.includes("dashboard")) {
+        return null
+    }
+
+    console.log(pathname)
+
     const router = useRouter();
 
     const [isMenuOpen, setIsMenuOpen] = useState(false);
