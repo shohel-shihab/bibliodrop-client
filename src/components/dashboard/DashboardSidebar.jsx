@@ -32,22 +32,22 @@ export default function DashboardSidebar({
   const menus = [
     {
       title: "Overview",
-      href: "/dashboard/user",
+      href: "/dashboard/reader",
       icon: MdDashboard,
     },
     {
       title: "Delivery History",
-      href: "/dashboard/user/delivery-history",
+      href: "/dashboard/reader/delivery-history",
       icon: FaTruck,
     },
     {
       title: "My Reading List",
-      href: "/dashboard/user/reading-list",
+      href: "/dashboard/reader/reading-list",
       icon: FaBookOpen,
     },
     {
       title: "My Reviews",
-      href: "/dashboard/user/reviews",
+      href: "/dashboard/reader/reviews",
       icon: MdOutlineRateReview,
     },
     {

@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { authClient } from "@/lib/auth-client";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import toast from "react-hot-toast";
@@ -13,6 +12,7 @@ import {
     FaLock,
     FaImage,
 } from "react-icons/fa";
+import { authClient } from "@/lib/auth-client";
 
 export default function RegisterForm() {
     const router = useRouter();
@@ -84,7 +84,7 @@ export default function RegisterForm() {
 
             <button
                 onClick={handleGoogle}
-                type="button"
+                type="submit"
                 className="mb-6 flex w-full items-center justify-center gap-3 rounded-xl border py-3 font-semibold transition hover:bg-gray-100"
             >
                 <FaGoogle className="text-red-500" />

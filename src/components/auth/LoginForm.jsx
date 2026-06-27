@@ -51,10 +51,10 @@ export default function LoginForm() {
   };
 
   const handleGoogle = async () => {
-    // const { error } = await authClient.signIn.social({
-    //   provider: "google",
-    //   callbackURL: "/",
-    // });
+    const { error } = await authClient.signIn.social({
+      provider: "google",
+      callbackURL: "/",
+    });
 
     if (error) {
       toast.error(error.message);

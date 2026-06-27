@@ -6,6 +6,7 @@ import { auth } from "@/lib/auth";
 import DashboardSidebar from "@/components/dashboard/DashboardSidebar";
 import DashboardHeader from "@/components/dashboard/DashboardHeader";
 
+
 export default async function DashboardLayout({children}) {
     const session = await auth.api.getSession({
         headers: await headers(),
