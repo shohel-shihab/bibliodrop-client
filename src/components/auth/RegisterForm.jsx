@@ -16,6 +16,11 @@ import {
 
 export default function RegisterForm() {
     const router = useRouter();
+    const {
+        data: session,
+    } = authClient.useSession()
+    const user = session?.user;
+    console.log(user)
 
     const [loading, setLoading] = useState(false);
     const [role, setRole] = useState("reader");
@@ -25,6 +30,14 @@ export default function RegisterForm() {
         const userData = Object.fromEntries(formData.entries());
         if (userData.password !== userData.confirmPassword) {
             return toast.error("Passwords do not match");
+        }
+
+        const user = {
+            email: userData.email,
+            password: userData.password,
+            name: userData.fullName,
+            image: userData.image,
+            role: userData.role || "reader"
         }
 
         const passwordRegex =
@@ -39,10 +52,7 @@ export default function RegisterForm() {
         try {
             setLoading(true);
             const { error } = await authClient.signUp.email({
-                email: userData.email,
-                password: userData.password,
-                name: userData.fullName,
-                image: userData.image,
+                ...user,
                 callbackURL: "/",
             });
 
@@ -205,12 +215,14 @@ export default function RegisterForm() {
                     <div className="grid grid-cols-2 gap-4">
                         <label
                             className={`cursor-pointer rounded-xl border p-4 text-center transition ${role === "reader"
-                                ? "border-violet-600 bg-violet-50"
-                                : ""
+                                    ? "border-violet-600 bg-violet-50"
+                                    : ""
                                 }`}
                         >
                             <input
                                 type="radio"
+                                name="role"
+                                value="reader"
                                 className="hidden"
                                 checked={role === "reader"}
                                 onChange={() => setRole("reader")}
@@ -227,6 +239,8 @@ export default function RegisterForm() {
                         >
                             <input
                                 type="radio"
+                                name="role"
+                                value="librarian"
                                 className="hidden"
                                 checked={role === "librarian"}
                                 onChange={() => setRole("librarian")}
