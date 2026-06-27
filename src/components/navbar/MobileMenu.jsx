@@ -2,91 +2,162 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { navItems } from "./navItems";
-import { motion, AnimatePresence } from "framer-motion";
 import { IoClose } from "react-icons/io5";
+import { navItems } from "./navItems";
 
-export default function MobileMenu({ isOpen, setIsOpen }) {
-  const pathname = usePathname();
+import { MdDashboard } from "react-icons/md";
+import { CgProfile } from "react-icons/cg";
+import { BiLogOut } from "react-icons/bi";
 
-  return (
-    <AnimatePresence>
-      {isOpen && (
-        <>
-          {/* Overlay */}
-          <motion.div
-            onClick={() => setIsOpen(false)}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-40 bg-black/40 lg:hidden"
-          />
+import { Button } from "@heroui/react";
+import { AnimatePresence, motion } from "framer-motion";
 
-          {/* Drawer */}
-          <motion.div
-            initial={{ x: "100%" }}
-            animate={{ x: 0 }}
-            exit={{ x: "100%" }}
-            transition={{ duration: 0.3 }}
-            className="fixed right-0 top-0 z-50 flex h-screen w-72 flex-col bg-white shadow-xl lg:hidden"
-          >
-            {/* Header */}
-            <div className="flex items-center justify-between border-b p-5">
-              <h2 className="text-xl font-bold text-violet-600">
-                BiblioDrop
-              </h2>
+export default function MobileMenu({
+    isOpen,
+    setIsOpen,
+    user,
+    handleLogout,
+}) {
+    const pathname = usePathname();
 
-              <button
-                onClick={() => setIsOpen(false)}
-                className="rounded-lg p-2 hover:bg-gray-100"
-              >
-                <IoClose size={28} />
-              </button>
-            </div>
+    return (
+        <AnimatePresence>
+            {isOpen && (
+                <>
+                    {/* Overlay */}
+                    <motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        onClick={() => setIsOpen(false)}
+                        className="fixed inset-0 z-40 bg-black/40 backdrop-blur-sm lg:hidden"
+                    />
 
-            {/* Navigation */}
-            <nav className="flex flex-col gap-2 p-5">
-              {navItems.map((item) => {
-                const isActive = pathname === item.href;
+                    {/* Drawer */}
+                    <motion.div
+                        initial={{ x: "100%" }}
+                        animate={{ x: 0 }}
+                        exit={{ x: "100%" }}
+                        transition={{ duration: 0.3 }}
+                        className="fixed right-0 top-0 z-50 flex h-screen w-80 flex-col bg-white shadow-2xl lg:hidden"
+                    >
+                        {/* Header */}
+                        <div className="flex items-center justify-between border-b px-5 py-5">
+                            <h2 className="text-xl font-bold text-violet-600">
+                                BiblioDrop
+                            </h2>
 
-                return (
-                  <Link
-                    key={item.href}
-                    href={item.href}
-                    onClick={() => setIsOpen(false)}
-                    className={`rounded-lg px-4 py-3 font-medium transition-all ${
-                      isActive
-                        ? "bg-violet-600 text-white"
-                        : "text-gray-700 hover:bg-violet-50 hover:text-violet-600"
-                    }`}
-                  >
-                    {item.title}
-                  </Link>
-                );
-              })}
-            </nav>
+                            <button
+                                onClick={() => setIsOpen(false)}
+                                className="rounded-lg p-2 hover:bg-gray-100"
+                            >
+                                <IoClose size={28} />
+                            </button>
+                        </div>
 
-            {/* Bottom Buttons */}
-            <div className="mt-auto border-t p-5 space-y-3">
-              <Link
-                href="/login"
-                onClick={() => setIsOpen(false)}
-                className="block rounded-lg border border-violet-600 py-3 text-center font-medium text-violet-600 transition hover:bg-violet-50"
-              >
-                Login
-              </Link>
+                        {/* User Info */}
+                        {user && (
+                            <div className="border-b px-5 py-4">
+                                <h3 className="font-semibold">
+                                    {user.name}
+                                </h3>
 
-              <Link
-                href="/register"
-                onClick={() => setIsOpen(false)}
-                className="block rounded-lg bg-violet-600 py-3 text-center font-medium text-white transition hover:bg-violet-700"
-              >
-                Register
-              </Link>
-            </div>
-          </motion.div>
-        </>
-      )}
-    </AnimatePresence>
-  );
+                                <p className="text-sm text-gray-500">
+                                    {user.email}
+                                </p>
+                            </div>
+                        )}
+
+                        {/* Navigation */}
+                        <div className="flex-1 px-5 py-6">
+                            <ul className="space-y-2">
+                                {navItems.map((item) => (
+                                    <li key={item.href}>
+                                        <Link
+                                            href={item.href}
+                                            onClick={() => setIsOpen(false)}
+                                            className={`flex items-center gap-3 rounded-xl px-4 py-3 font-medium transition ${pathname === item.href
+                                                ? "bg-violet-100 text-violet-700"
+                                                : "hover:bg-violet-50"
+                                                }`}
+                                        >
+                                            <item.icon size={20} />
+                                            {item.title}
+                                        </Link>
+                                    </li>
+                                ))}
+
+                                {user && (
+                                    <>
+                                        <li>
+                                            <Link
+                                                href="/dashboard"
+                                               onClick={() => setIsOpen(false)}
+                                                className="flex items-center gap-3 rounded-xl px-4 py-3 font-medium hover:bg-violet-50"
+                                            >
+                                                <MdDashboard size={20} />
+                                                Dashboard
+                                            </Link>
+                                        </li>
+
+                                        <li>
+                                            <Link
+                                                href="/profile"
+                                              onClick={() => setIsOpen(false)}
+                                                className="flex items-center gap-3 rounded-xl px-4 py-3 font-medium hover:bg-violet-50"
+                                            >
+                                                <CgProfile size={20} />
+                                                Profile
+                                            </Link>
+                                        </li>
+                                    </>
+                                )}
+                            </ul>
+                        </div>
+
+                        {/* Bottom */}
+                        <div className="border-t p-5">
+                            {!user ? (
+                                <div className="space-y-3">
+                                    <Link href="/login">
+                                        <Button
+                                            variant="bordered"
+                                            radius="full"
+                                            className="w-full"
+                                            onPress={() => setIsMenuOpen(false)}
+                                        >
+                                            Login
+                                        </Button>
+                                    </Link>
+
+                                    <Link href="/register">
+                                        <Button
+                                            radius="full"
+                                            className="w-full bg-violet-600 text-white"
+                                            onPress={() => setIsMenuOpen(false)}
+                                        >
+                                            Register
+                                        </Button>
+                                    </Link>
+                                </div>
+                            ) : (
+                                <Button
+                                    color="danger"
+                                    radius="full"
+                                    className="w-full"
+                                    onPress={() => {
+                                        setIsMenuOpen(false);
+                                        handleLogout();
+                                    }}
+                                    startContent={<BiLogOut />}
+                                >
+                                    Logout
+                                </Button>
+                            )}
+                        </div>
+                    </motion.div>
+                </>
+            )}
+        </AnimatePresence>
+    );
 }
