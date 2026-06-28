@@ -10,7 +10,7 @@ import { authClient } from "@/lib/auth-client";
 // };
 
 export default function LibrarianDashboardPage() {
-  const { data: session } =authClient.useSession();
+  const { data: session } = authClient.useSession();
   const [overview, setOverview] = useState(null);
   const [loading, setLoading] = useState(true);
   const [books, setBooks] = useState([]);
@@ -25,7 +25,7 @@ export default function LibrarianDashboardPage() {
         setOverview(data);
         setBooks(data.books);
         setLoading(false);
-        
+
       });
   }, [session]);
   if (loading)
@@ -33,6 +33,7 @@ export default function LibrarianDashboardPage() {
 
   return (
     <section className="space-y-8">
+     
       {/* Page Header */}
       <div>
         <h1 className="text-3xl font-bold text-gray-800">
@@ -46,7 +47,7 @@ export default function LibrarianDashboardPage() {
       </div>
 
       {/* Statistics */}
-      <LibrarianOverviewCards  stats={overview.stats}/>
+      <LibrarianOverviewCards stats={overview.stats} />
 
       {/* Chart & Popular Books */}
       <div className="grid gap-6 xl:grid-cols-3">
@@ -57,7 +58,7 @@ export default function LibrarianDashboardPage() {
 
         {/* Popular Books */}
         <div className="rounded-2xl border border-gray-200 bg-white p-6 shadow-sm">
-          <PopularBooks  books={overview.books}/>
+          <PopularBooks books={overview.books} />
         </div>
       </div>
     </section>

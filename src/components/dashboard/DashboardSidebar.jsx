@@ -2,14 +2,16 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 
 import { Avatar } from "@heroui/react";
 
 
 import {
   FaBookOpen,
+  FaHome,
   FaPlusCircle,
+  FaSignOutAlt,
   FaTruck,
 } from "react-icons/fa";
 
@@ -17,13 +19,26 @@ import {
 import { MdDashboard, MdLibraryBooks, MdOutlineApproval, MdOutlineInventory, MdOutlinePayments, MdOutlineRateReview, MdPeopleOutline } from "react-icons/md";
 import { CgProfile } from "react-icons/cg";
 import { IoSettingsOutline } from "react-icons/io5";
+import { authClient } from "@/lib/auth-client";
+import toast from "react-hot-toast";
 
 export default function DashboardSidebar({ session }) {
   const pathname = usePathname();
+  const router = useRouter()
 
   const user = session?.user;
   const role = user?.role
-  console.log(user)
+
+  const handleLogout = async () => {
+    const { error } = await authClient.signOut();
+
+    if (error) {
+      return toast.error(error.message);
+    }
+    toast.success("Logout Successful");
+    router.push("/");
+    router.refresh();
+  };
 
   const dashboardItem = {
     reader: [
@@ -132,35 +147,8 @@ export default function DashboardSidebar({ session }) {
   };
 
   const menus = dashboardItem[role] || "reader"
-  // const menus = [
-  //   { 
-  //     title: "Overview", href: "/dashboard/reader", icon: MdDashboard },
-  //   {
-  //     title: "Delivery History",
-  //     href: "/dashboard/reader/delivery-history",
-  //     icon: FaTruck,
-  //   },
-  //   {
-  //     title: "My Reading List",
-  //     href: "/dashboard/reader/reading-list",
-  //     icon: FaBookOpen,
-  //   },
-  //   {
-  //     title: "My Reviews",
-  //     href: "/dashboard/reader/reviews",
-  //     icon: MdOutlineRateReview,
-  //   },
-  //   {
-  //     title: "Profile",
-  //     href: "/profile",
-  //     icon: CgProfile,
-  //   },
-  //   {
-  //     title: "Settings",
-  //     href: "/settings",
-  //     icon: IoSettingsOutline,
-  //   },
-  // ];
+
+
 
   return (
     <aside className="hidden min-h-screen w-72 border-r border-gray-200 bg-white lg:block">
@@ -240,6 +228,35 @@ export default function DashboardSidebar({ session }) {
           );
         })}
       </nav>
+
+      <div className="border-t p-4">
+        {/* Home */}
+
+        <Link
+          href="/"
+          className="mb-2 flex items-center gap-4 rounded-xl px-4 py-3 text-gray-600 transition hover:bg-violet-50 hover:text-violet-700"
+        >
+          <FaHome size={20} />
+
+          <span className="font-medium">
+            Home
+          </span>
+        </Link>
+
+        {/* Logout */}
+
+        <button
+        type="submit"
+          onClick={handleLogout}
+          className="flex w-full items-center gap-4 rounded-xl px-4 py-3 text-red-600 transition hover:bg-red-50"
+        >
+          <FaSignOutAlt size={20} />
+
+          <span className="font-medium cursor-pointer">
+            Sign Out
+          </span>
+        </button>
+      </div>
     </aside>
   );
 }
