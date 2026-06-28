@@ -8,7 +8,7 @@ export default function ApprovalQueueTable() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchPendingBooks = async () => {
+    const fetchBooks = async () => {
       try {
         const res = await fetch(
           `${process.env.NEXT_PUBLIC_SERVER_URL}/api/admin/pending-books`
@@ -24,27 +24,32 @@ export default function ApprovalQueueTable() {
       }
     };
 
-    fetchPendingBooks();
+    fetchBooks();
   }, []);
 
   if (loading) {
+    return <h2>Loading...</h2>;
+  }
+
+  if (books.length === 0) {
     return (
-      <p className="text-center py-10">
-        Loading...
-      </p>
+      <div className="rounded-xl border p-8 text-center">
+        <h2 className="text-xl font-semibold">
+          No Pending Books
+        </h2>
+      </div>
     );
   }
 
   return (
-    <div className="overflow-hidden rounded-2xl border bg-white">
+    <div className="overflow-x-auto rounded-xl border border-gray-200">
       <table className="min-w-full">
-        <thead>
+        <thead className="bg-violet-50">
           <tr>
-            <th className="p-4 text-left">Book</th>
-            <th className="p-4 text-left">Author</th>
-            <th className="p-4 text-left">Category</th>
-            <th className="p-4 text-center">Status</th>
-            <th className="p-4 text-center">Actions</th>
+            <th className="px-6 py-4 text-left">Title</th>
+            <th className="px-6 py-4 text-left">Author</th>
+            <th className="px-6 py-4 text-left">Status</th>
+            <th className="px-6 py-4 text-center">Actions</th>
           </tr>
         </thead>
 
@@ -53,6 +58,7 @@ export default function ApprovalQueueTable() {
             <ApprovalRow
               key={book._id}
               book={book}
+              setBooks={setBooks}
             />
           ))}
         </tbody>

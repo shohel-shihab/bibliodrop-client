@@ -1,48 +1,111 @@
 "use client";
 
-import { useState } from "react";
 import toast from "react-hot-toast";
-import {
-  FaTrash,
-  FaEye,
-  FaEyeSlash,
-} from "react-icons/fa";
+import Swal from "sweetalert2";
 
 import BookStatusBadge from "./BookStatusBadge";
 
-export default function BookRow({ book }) {
-  const [status, setStatus] = useState(book.status);
+export default function BookRow({
+  book,
+  setBooks,
+}) {
 
-  const handleToggleStatus = () => {
-    let newStatus = status;
 
-    if (status === "Published") {
-      newStatus = "Unpublished";
-    } else if (status === "Unpublished") {
-      newStatus = "Published";
-    } else {
-      toast.error(
-        "Pending books should be approved from the Approval Queue."
+
+  const handleUnpublish = async () => {
+
+    const result = await Swal.fire({
+      title: "Unpublish Book?",
+      text: "This book will no longer appear publicly.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes, Unpublish",
+    });
+
+    if (!result.isConfirmed) return;
+
+    try {
+
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/api/admin/books/${book._id}/unpublish`,
+        {
+          method: "PATCH",
+        }
       );
-      return;
+
+      const data = await res.json();
+
+      if (data.success) {
+
+        toast.success("Book Unpublished");
+
+        setBooks((prev) =>
+          prev.map((item) =>
+            item._id === book._id
+              ? {
+                  ...item,
+                  status: "Unpublished",
+                }
+              : item
+          )
+        );
+
+      }
+
+    } catch (error) {
+      console.log(error);
+      toast.error("Something went wrong");
     }
-
-    setStatus(newStatus);
-
-    // Backend integration later
-
-    toast.success(`Book marked as ${newStatus}.`);
   };
 
-  const handleDelete = () => {
-    // Backend integration later
 
-    toast.success("Book deleted successfully.");
+
+  const handleDelete = async () => {
+
+    const result = await Swal.fire({
+      title: "Delete Book?",
+      text: "This action cannot be undone.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Delete",
+    });
+
+    if (!result.isConfirmed) return;
+
+    try {
+
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/api/admin/books/${book._id}`,
+        {
+          method: "DELETE",
+        }
+      );
+
+      const data = await res.json();
+
+      if (data.success) {
+
+        toast.success("Book Deleted");
+
+        setBooks((prev) =>
+          prev.filter(
+            (item) => item._id !== book._id
+          )
+        );
+
+      }
+
+    } catch (error) {
+      console.log(error);
+      toast.error("Something went wrong");
+    }
+
   };
 
   return (
-    <tr className="border-b transition hover:bg-violet-50">
-      <td className="px-6 py-4 font-medium">
+    <tr className="border-b">
+
+      <td className="px-6 py-4">
         {book.title}
       </td>
 
@@ -51,46 +114,38 @@ export default function BookRow({ book }) {
       </td>
 
       <td className="px-6 py-4">
-        {book.librarian}
+        <BookStatusBadge
+          status={book.status}
+        />
       </td>
 
       <td className="px-6 py-4">
-        {book.category}
-      </td>
 
-      <td className="px-6 py-4">
-        <BookStatusBadge status={status} />
-      </td>
+        <div className="flex gap-2">
 
-      <td className="px-6 py-4">
-        <div className="flex items-center gap-2">
-          {status !== "Pending Approval" && (
+        
+          {book.status === "Published" && (
             <button
-              onClick={handleToggleStatus}
-              className="rounded-lg bg-violet-100 p-2 text-violet-700 transition hover:bg-violet-200"
-              title={
-                status === "Published"
-                  ? "Unpublish Book"
-                  : "Publish Book"
-              }
+              onClick={handleUnpublish}
+              className="rounded-lg bg-yellow-500 px-4 py-2 text-white hover:bg-yellow-600"
             >
-              {status === "Published" ? (
-                <FaEyeSlash />
-              ) : (
-                <FaEye />
-              )}
+              Unpublish
             </button>
           )}
 
+          {/* Delete */}
+
           <button
             onClick={handleDelete}
-            className="rounded-lg bg-red-100 p-2 text-red-600 transition hover:bg-red-200"
-            title="Delete Book"
+            className="rounded-lg bg-red-500 px-4 py-2 text-white hover:bg-red-600"
           >
-            <FaTrash />
+            Delete
           </button>
+
         </div>
+
       </td>
+
     </tr>
   );
 }

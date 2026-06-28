@@ -12,10 +12,11 @@ export default function UsersTable() {
     const fetchUsers = async () => {
       try {
         const res = await fetch(
-          `${process.env.NEXT_PUBLIC_SERVER_URL}/api/admin/users`
+          `${process.env.NEXT_PUBLIC_SERVER_URL}/api/admin/user`
         );
 
         const data = await res.json();
+        console.log(data)
 
         setUsers(data.users || []);
       } catch (error) {

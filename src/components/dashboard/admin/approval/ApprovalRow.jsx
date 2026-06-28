@@ -1,81 +1,160 @@
 "use client";
 
 import toast from "react-hot-toast";
-import {
-  FaCheckCircle,
-  FaTrash,
-} from "react-icons/fa";
+import Swal from "sweetalert2";
 
 import ApprovalStatusBadge from "./ApprovalStatusBadge";
 
 export default function ApprovalRow({
   book,
+  setBooks
 }) {
-  const handleApprove = () => {
-    // Backend Integration Later
 
-    toast.success(
-      `"${book.title}" has been published.`
-    );
+  const handleApprove = async () => {
+    console.log("Approve button clicked");
+
+    const result = await Swal.fire({
+      title: "Approve Book?",
+      text: "This book will become publicly available.",
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonText: "Approve",
+    });
+
+    if (!result.isConfirmed) return;
+
+    try {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/api/admin/books/${book._id}/approve`,
+        {
+          method: "PATCH",
+        }
+      );
+
+      console.log("Status:", res.status);
+
+      const data = await res.json();
+
+      console.log("Response:", data);
+
+      if (data.success) {
+        toast.success("Book Published");
+
+        setBooks((prev) =>
+          prev.filter((item) => item._id !== book._id)
+        );
+      }
+    } catch (error) {
+      console.log(error);
+    }
   };
 
-  const handleDelete = () => {
-    // Backend Integration Later
+  const handleDelete = async () => {
 
-    toast.success(
-      `"${book.title}" has been deleted.`
+    const result = await Swal.fire({
+
+      title: "Delete Book?",
+
+      text: "This action cannot be undone.",
+
+      icon: "warning",
+
+      showCancelButton: true,
+
+      confirmButtonText: "Delete"
+
+    });
+
+    if (!result.isConfirmed) return;
+
+    const res = await fetch(
+
+      `${process.env.NEXT_PUBLIC_SERVER_URL}/api/admin/books/${book._id}`,
+
+      {
+
+        method: "DELETE"
+
+      }
+
     );
+
+    const data = await res.json();
+
+    if (data.success) {
+
+      toast.success("Book Deleted");
+
+      setBooks(prev =>
+
+        prev.filter(item => item._id !== book._id)
+
+      );
+
+    }
+
   };
 
   return (
-    <tr className="border-b transition hover:bg-violet-50">
-      <td className="px-6 py-4 font-medium">
+
+    <tr className="border-b">
+
+      <td className="px-6 py-5">
+
         {book.title}
+
       </td>
 
-      <td className="px-6 py-4">
+      <td className="px-6 py-5">
+
         {book.author}
+
       </td>
 
-      <td className="px-6 py-4">
-        {book.category}
-      </td>
+      <td className="px-6 py-5">
 
-      <td className="px-6 py-4">
-        {book.librarian}
-      </td>
-
-      <td className="px-6 py-4">
-        {book.date}
-      </td>
-
-      <td className="px-6 py-4">
         <ApprovalStatusBadge
+
           status={book.status}
+
         />
+
       </td>
 
-      <td className="px-6 py-4">
-        <div className="flex items-center gap-2">
+      <td className="px-6 py-5">
+
+        <div className="flex gap-3">
+
           <button
+
             onClick={handleApprove}
-            className="flex items-center gap-2 rounded-lg bg-emerald-600 px-4 py-2 text-sm text-white transition hover:bg-emerald-700"
+
+            className="rounded-lg bg-green-600 px-4 py-2 text-white hover:bg-green-700"
+
           >
-            <FaCheckCircle />
 
             Approve
+
           </button>
 
           <button
+
             onClick={handleDelete}
-            className="flex items-center gap-2 rounded-lg bg-red-600 px-4 py-2 text-sm text-white transition hover:bg-red-700"
+
+            className="rounded-lg bg-red-500 px-4 py-2 text-white hover:bg-red-600"
+
           >
-            <FaTrash />
 
             Delete
+
           </button>
+
         </div>
+
       </td>
+
     </tr>
+
   );
+
 }

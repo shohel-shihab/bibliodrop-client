@@ -1,70 +1,78 @@
 "use client";
 
-import { useState } from "react";
-import { FaSave, FaTrash } from "react-icons/fa";
 import toast from "react-hot-toast";
+import Swal from "sweetalert2";
 
 import RoleSelect from "./RoleSelect";
 
-export default function UserRow({ user }) {
-  const [role, setRole] = useState(user.role);
-
-  const handleSave = () => {
-    // Backend Later
-
-    console.log({
-      id: user.id,
-      role,
+export default function UserRow({ user, setUsers }) {
+  const handleDelete = async () => {
+    const result = await Swal.fire({
+      title: "Delete User?",
+      text: "This user will be permanently deleted.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#7c3aed",
+      cancelButtonColor: "#ef4444",
+      confirmButtonText: "Yes, Delete",
     });
 
-    toast.success("User role updated.");
-  };
+    if (!result.isConfirmed) return;
 
-  const handleDelete = () => {
-    // Backend Later
+    try {
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/api/admin/user/${user._id}`,
+        {
+          method: "DELETE",
+        }
+      );
 
-    console.log(user.id);
+      const data = await res.json();
 
-    toast.success("User deleted.");
+      if (data.success) {
+        toast.success("User deleted successfully.");
+
+        // Remove the deleted user from state
+        setUsers((prev) =>
+          prev.filter((u) => u._id !== user._id)
+        );
+      } else {
+        toast.error(data.message);
+      }
+    } catch (error) {
+      console.log(error);
+      toast.error("Something went wrong.");
+    }
   };
 
   return (
-    <tr className="border-b transition hover:bg-violet-50">
-      <td className="px-6 py-4 font-medium">
+    <tr className="border-b hover:bg-gray-50">
+      {/* Name */}
+      <td className="px-6 py-4">
         {user.name}
       </td>
 
+      {/* Email */}
       <td className="px-6 py-4">
         {user.email}
       </td>
 
+      {/* Role */}
       <td className="px-6 py-4">
         <RoleSelect
-          value={role}
-          onChange={(e) =>
-            setRole(e.target.value)
-          }
+          user={user}
+          setUsers={setUsers}
         />
       </td>
 
-      <td className="px-6 py-4">
-        <div className="flex items-center gap-2">
-          <button
-            onClick={handleSave}
-            className="flex items-center gap-2 rounded-lg bg-violet-600 px-4 py-2 text-sm text-white transition hover:bg-violet-700"
-          >
-            <FaSave />
-            Save
-          </button>
-
-          <button
-            onClick={handleDelete}
-            className="flex items-center gap-2 rounded-lg bg-red-600 px-4 py-2 text-sm text-white transition hover:bg-red-700"
-          >
-            <FaTrash />
-            Delete
-          </button>
-        </div>
+      {/* Delete */}
+      <td className="px-6 py-4 text-center">
+        <button
+          onClick={handleDelete}
+          className="rounded-lg bg-red-500 px-4 py-2 text-white transition hover:bg-red-600"
+        >
+          Delete
+        </button>
       </td>
     </tr>
   );
