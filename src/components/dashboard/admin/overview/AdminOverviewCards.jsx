@@ -1,45 +1,49 @@
 "use client";
 
 import {
-  FaUsers,
   FaBook,
-  FaTruck,
+  FaUsers,
   FaMoneyBillWave,
+  FaTruck,
 } from "react-icons/fa";
+
 import StatsCard from "../../reader/overview/StatsCard";
 
-
-
-export default function AdminOverviewCards() {
-  const stats = [
+export default function AdminOverviewCards({
+  stats,
+}) {
+  const cards = [
     {
       id: 1,
       title: "Total Users",
-      value: 1248,
+      value: stats.totalUsers,
       icon: FaUsers,
       bgColor: "bg-blue-100",
       textColor: "text-blue-600",
     },
+
     {
       id: 2,
       title: "Total Books",
-      value: 568,
+      value: stats.totalBooks,
       icon: FaBook,
       bgColor: "bg-violet-100",
       textColor: "text-violet-600",
     },
+
     {
       id: 3,
       title: "Total Deliveries",
-      value: 963,
+      value: stats.totalDeliveries,
       icon: FaTruck,
-      bgColor: "bg-amber-100",
-      textColor: "text-amber-600",
+      bgColor: "bg-orange-100",
+      textColor: "text-orange-600",
     },
+
     {
       id: 4,
       title: "Total Revenue",
-      value: "৳85,200",
+      value: `৳${stats.totalRevenue}`,
       icon: FaMoneyBillWave,
       bgColor: "bg-emerald-100",
       textColor: "text-emerald-600",
@@ -47,15 +51,11 @@ export default function AdminOverviewCards() {
   ];
 
   return (
-    <section className="grid gap-6 sm:grid-cols-2 xl:grid-cols-4">
-      {stats.map((stat) => (
+    <section className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
+      {cards.map((card) => (
         <StatsCard
-          key={stat.id}
-          title={stat.title}
-          value={stat.value}
-          icon={stat.icon}
-          bgColor={stat.bgColor}
-          textColor={stat.textColor}
+          key={card.id}
+          {...card}
         />
       ))}
     </section>

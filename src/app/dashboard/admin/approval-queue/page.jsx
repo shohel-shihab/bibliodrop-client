@@ -5,6 +5,7 @@ export const metadata = {
 };
 
 export default function ApprovalQueuePage() {
+  
   return (
     <section className="space-y-8">
       {/* Page Header */}

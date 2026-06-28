@@ -1,98 +1,62 @@
 "use client";
 
+import { useEffect, useState } from "react";
 import ApprovalRow from "./ApprovalRow";
 
-const pendingBooks = [
-  {
-    id: 1,
-    title: "Atomic Habits",
-    author: "James Clear",
-    category: "Self Development",
-    librarian: "Shohel Rana",
-    date: "25 Jun 2026",
-    status: "Pending Approval",
-  },
-  {
-    id: 2,
-    title: "Clean Code",
-    author: "Robert C. Martin",
-    category: "Programming",
-    librarian: "John Doe",
-    date: "24 Jun 2026",
-    status: "Pending Approval",
-  },
-  {
-    id: 3,
-    title: "Deep Work",
-    author: "Cal Newport",
-    category: "Productivity",
-    librarian: "Alice Smith",
-    date: "22 Jun 2026",
-    status: "Pending Approval",
-  },
-];
-
 export default function ApprovalQueueTable() {
+  const [books, setBooks] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchPendingBooks = async () => {
+      try {
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_SERVER_URL}/api/admin/pending-books`
+        );
+
+        const data = await res.json();
+
+        setBooks(data.books || []);
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPendingBooks();
+  }, []);
+
+  if (loading) {
+    return (
+      <p className="text-center py-10">
+        Loading...
+      </p>
+    );
+  }
+
   return (
-    <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
-      {/* Header */}
+    <div className="overflow-hidden rounded-2xl border bg-white">
+      <table className="min-w-full">
+        <thead>
+          <tr>
+            <th className="p-4 text-left">Book</th>
+            <th className="p-4 text-left">Author</th>
+            <th className="p-4 text-left">Category</th>
+            <th className="p-4 text-center">Status</th>
+            <th className="p-4 text-center">Actions</th>
+          </tr>
+        </thead>
 
-      <div className="border-b px-6 py-5">
-        <h2 className="text-2xl font-bold text-gray-800">
-          Pending Books
-        </h2>
-
-        <p className="mt-1 text-sm text-gray-500">
-          Review and publish librarian submissions.
-        </p>
-      </div>
-
-      {/* Table */}
-
-      <div className="overflow-x-auto">
-        <table className="min-w-full">
-          <thead className="bg-violet-50">
-            <tr>
-              <th className="px-6 py-4 text-left">
-                Title
-              </th>
-
-              <th className="px-6 py-4 text-left">
-                Author
-              </th>
-
-              <th className="px-6 py-4 text-left">
-                Category
-              </th>
-
-              <th className="px-6 py-4 text-left">
-                Librarian
-              </th>
-
-              <th className="px-6 py-4 text-left">
-                Submitted
-              </th>
-
-              <th className="px-6 py-4 text-left">
-                Status
-              </th>
-
-              <th className="px-6 py-4 text-center">
-                Actions
-              </th>
-            </tr>
-          </thead>
-
-          <tbody>
-            {pendingBooks.map((book) => (
-              <ApprovalRow
-                key={book.id}
-                book={book}
-              />
-            ))}
-          </tbody>
-        </table>
-      </div>
+        <tbody>
+          {books.map((book) => (
+            <ApprovalRow
+              key={book._id}
+              book={book}
+            />
+          ))}
+        </tbody>
+      </table>
     </div>
   );
 }
