@@ -9,31 +9,58 @@ import { authClient } from "@/lib/auth-client";
 
 export default function AddBookForm() {
   const [loading, setLoading] = useState(false);
- const { 
-        data: session, 
-       
-    } = authClient.useSession() 
+  const {
+    data: session,
+
+  } = authClient.useSession()
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     setLoading(true);
-
     try {
+      // Form
       const form = new FormData(e.currentTarget);
+      // Image File
+      const imageFile = form.get("image");
+
+      // Upload Image to imgBB
+      const imageFormData = new FormData();
+      imageFormData.append("image", imageFile);
+
+      const imageResponse = await fetch(
+        `https://api.imgbb.com/1/upload?key=${process.env.NEXT_PUBLIC_IMGBB_API_KEY}`,
+        {
+          method: "POST",
+          body: imageFormData,
+        }
+      );
+
+      const imageData = await imageResponse.json();
+
+      console.log(imageData);
+
+      if (!imageData.success) {
+        toast.error("Image upload failed");
+        return;
+      }
+
+      // Image URL from imgBB
+      const imageURL = imageData.data.display_url;
+
+      // Other form fields
       const formData = Object.fromEntries(form.entries());
-      // Image Upload (imgBB)
-      // Next step we will upload this image and get imageURL
 
-      console.log(formData);
-
+      // Book Object
       const bookData = {
         title: formData.title,
         author: formData.author,
         description: formData.description,
-        deliveryFee: formData.deliveryFee,
         category: formData.category,
-        image: formData.image,
+        deliveryFee: Number(formData.deliveryFee),
+
+        image: imageURL,
+
         status: "Pending Approval",
+
         librarianId: session?.user?.id,
         librarianName: session?.user?.name,
         librarianEmail: session?.user?.email,
@@ -41,25 +68,31 @@ export default function AddBookForm() {
 
       console.log(bookData);
 
-      const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/books`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(bookData)
-      })
-      const data = await res.json()
-      console.log(data)
-      toast.success("Ready for image upload.");
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_SERVER_URL}/api/books`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(bookData),
+        }
+      );
+
+      const data = await res.json();
+
+      console.log(data);
+
+      toast.success("Book Added Successfully!");
+
       e.target.reset();
     } catch (error) {
       console.log(error);
-      toast.error("Something went wrong.");
+      toast.error("Something went wrong");
     } finally {
       setLoading(false);
     }
   };
-
   return (
     <form
       onSubmit={handleSubmit}
