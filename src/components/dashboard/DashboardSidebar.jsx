@@ -6,61 +6,161 @@ import { usePathname } from "next/navigation";
 
 import { Avatar } from "@heroui/react";
 
-import {
-  MdDashboard,
-  MdOutlineRateReview,
-} from "react-icons/md";
 
 import {
   FaBookOpen,
+  FaPlusCircle,
   FaTruck,
 } from "react-icons/fa";
 
-import {
-  CgProfile,
-} from "react-icons/cg";
 
-import {
-  IoSettingsOutline,
-} from "react-icons/io5";
+import { MdDashboard, MdLibraryBooks, MdOutlineApproval, MdOutlineInventory, MdOutlinePayments, MdOutlineRateReview, MdPeopleOutline } from "react-icons/md";
+import { CgProfile } from "react-icons/cg";
+import { IoSettingsOutline } from "react-icons/io5";
 
-export default function DashboardSidebar({
-  session,
-}) {
+export default function DashboardSidebar({ session }) {
   const pathname = usePathname();
 
-  const menus = [
-    {
-      title: "Overview",
-      href: "/dashboard/reader",
-      icon: MdDashboard,
-    },
-    {
-      title: "Delivery History",
-      href: "/dashboard/reader/delivery-history",
-      icon: FaTruck,
-    },
-    {
-      title: "My Reading List",
-      href: "/dashboard/reader/reading-list",
-      icon: FaBookOpen,
-    },
-    {
-      title: "My Reviews",
-      href: "/dashboard/reader/reviews",
-      icon: MdOutlineRateReview,
-    },
-    {
-      title: "Profile",
-      href: "/profile",
-      icon: CgProfile,
-    },
-    {
-      title: "Settings",
-      href: "/settings",
-      icon: IoSettingsOutline,
-    },
-  ];
+  const user = session?.user;
+  const role = user?.role
+  console.log(user)
+
+  const dashboardItem = {
+    reader: [
+      {
+        title: "Overview",
+        href: "/dashboard/reader",
+        icon: MdDashboard,
+      },
+      {
+        title: "My Reading List",
+        href: "/dashboard/reader/reading-list",
+        icon: FaBookOpen,
+      },
+      {
+        title: "Delivery History",
+        href: "/dashboard/reader/delivery-history",
+        icon: FaTruck,
+      },
+      {
+        title: "My Reviews",
+        href: "/dashboard/reader/reviews",
+        icon: MdOutlineRateReview,
+      },
+      {
+        title: "Profile",
+        href: "/profile",
+        icon: CgProfile,
+      },
+      {
+        title: "Settings",
+        href: "/settings",
+        icon: IoSettingsOutline,
+      },
+    ],
+
+    librarian: [
+      {
+        title: "Overview",
+        href: "/dashboard/librarian",
+        icon: MdDashboard,
+      },
+      {
+        title: "Add Book",
+        href: "/dashboard/librarian/add-book",
+        icon: FaPlusCircle,
+      },
+      {
+        title: "Manage Inventory",
+        href: "/dashboard/librarian/inventory",
+        icon: MdOutlineInventory,
+      },
+      {
+        title: "Manage Deliveries",
+        href: "/dashboard/librarian/deliveries",
+        icon: FaTruck,
+      },
+      {
+        title: "Profile",
+        href: "/profile",
+        icon: CgProfile,
+      },
+      {
+        title: "Settings",
+        href: "/settings",
+        icon: IoSettingsOutline,
+      },
+    ],
+
+    admin: [
+      {
+        title: "Overview",
+        href: "/dashboard/admin",
+        icon: MdDashboard,
+      },
+      {
+        title: "Approval Queue",
+        href: "/dashboard/admin/approval-queue",
+        icon: MdOutlineApproval,
+      },
+      {
+        title: "Manage Users",
+        href: "/dashboard/admin/users",
+        icon: MdPeopleOutline,
+      },
+      {
+        title: "Manage Books",
+        href: "/dashboard/admin/books",
+        icon: MdLibraryBooks,
+      },
+      {
+        title: "Transactions",
+        href: "/dashboard/admin/transactions",
+        icon: MdOutlinePayments,
+      },
+      {
+        title: "Profile",
+        href: "/profile",
+        icon: CgProfile,
+      },
+      {
+        title: "Settings",
+        href: "/settings",
+        icon: IoSettingsOutline,
+      },
+    ],
+  };
+
+  const menus = dashboardItem[role] || "reader"
+  // const menus = [
+  //   { 
+  //     title: "Overview", href: "/dashboard/reader", icon: MdDashboard },
+  //   {
+  //     title: "Delivery History",
+  //     href: "/dashboard/reader/delivery-history",
+  //     icon: FaTruck,
+  //   },
+  //   {
+  //     title: "My Reading List",
+  //     href: "/dashboard/reader/reading-list",
+  //     icon: FaBookOpen,
+  //   },
+  //   {
+  //     title: "My Reviews",
+  //     href: "/dashboard/reader/reviews",
+  //     icon: MdOutlineRateReview,
+  //   },
+  //   {
+  //     title: "Profile",
+  //     href: "/profile",
+  //     icon: CgProfile,
+  //   },
+  //   {
+  //     title: "Settings",
+  //     href: "/settings",
+  //     icon: IoSettingsOutline,
+  //   },
+  // ];
 
   return (
     <aside className="hidden min-h-screen w-72 border-r border-gray-200 bg-white lg:block">
@@ -126,11 +226,10 @@ export default function DashboardSidebar({
             <Link
               key={menu.href}
               href={menu.href}
-              className={`flex items-center gap-4 rounded-xl px-4 py-3 transition-all duration-300 ${
-                active
-                  ? "bg-violet-600 text-white shadow-lg"
-                  : "text-gray-600 hover:bg-violet-50 hover:text-violet-700"
-              }`}
+              className={`flex items-center gap-4 rounded-xl px-4 py-3 transition-all duration-300 ${active
+                ? "bg-violet-600 text-white shadow-lg"
+                : "text-gray-600 hover:bg-violet-50 hover:text-violet-700"
+                }`}
             >
               <Icon size={22} />
 
