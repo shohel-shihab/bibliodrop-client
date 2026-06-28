@@ -26,7 +26,7 @@ const books = [
   },
 ];
 
-export default function InventoryTable() {
+export default function InventoryTable({books}) {
   return (
     <div className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm">
       {/* Header */}
@@ -68,7 +68,7 @@ export default function InventoryTable() {
           </thead>
 
           <tbody>
-            {books.map((book) => (
+            {books?.map((book) => (
               <InventoryRow
                 key={book.id}
                 book={book}

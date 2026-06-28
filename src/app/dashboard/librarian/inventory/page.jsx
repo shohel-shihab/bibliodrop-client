@@ -1,67 +1,35 @@
+"use client";
+
+import { useEffect, useState } from "react";
+
+import { authClient } from "@/lib/auth-client";
+
 import InventoryTable from "@/components/dashboard/librarian/inventory/InventoryTable";
 
-export const metadata = {
-  title: "Manage Inventory | BiblioDrop",
-};
-
 export default function InventoryPage() {
-  return (
-    <section className="space-y-8">
-      {/* Header */}
-      <div className="flex flex-col justify-between gap-4 md:flex-row md:items-center">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-800">
-            Manage Inventory
-          </h1>
+  const { data: session } = authClient.useSession();
 
-          <p className="mt-2 text-gray-500">
-            View, edit, delete and manage the publishing status of all your
-            listed books.
-          </p>
-        </div>
-      </div>
+  const [books, setBooks] = useState([]);
 
-      {/* Information Card */}
-      <div className="rounded-2xl border border-violet-200 bg-violet-50 p-5">
-        <h3 className="mb-2 text-lg font-semibold text-violet-700">
-          Publishing Rules
-        </h3>
+  const [loading, setLoading] = useState(true);
 
-        <ul className="list-disc space-y-2 pl-5 text-sm text-gray-700">
-          <li>
-            Every newly added book starts with
-            <span className="font-semibold text-amber-600">
-              {" "}
-              Pending Approval
-            </span>
-            .
-          </li>
+  useEffect(() => {
+    if (!session?.user?.email) return;
 
-          <li>
-            Only the administrator can approve a pending book.
-          </li>
+    fetch(
+      `${process.env.NEXT_PUBLIC_SERVER_URL}/api/books/my-books?email=${session.user.email}`
+    )
+      .then((res) => res.json())
+      .then((data) => {
+        setBooks(data.books);
 
-          <li>
-            Once approved, you can switch between
-            <span className="font-semibold text-green-600">
-              {" "}
-              Published
-            </span>
-            {" "}and
-            <span className="font-semibold text-gray-700">
-              {" "}Unpublished
-            </span>
-            .
-          </li>
+        setLoading(false);
+      });
+  }, [session]);
 
-          <li>
-            You cannot publish a book that is still pending approval.
-          </li>
-        </ul>
-      </div>
+  if (loading) {
+    return <p>Loading...</p>;
+  }
 
-      {/* Inventory Table */}
-      <InventoryTable />
-    </section>
-  );
+  return <InventoryTable books={books} />;
 }

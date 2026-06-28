@@ -5,59 +5,55 @@ import toast from "react-hot-toast";
 
 import CategorySelect from "./CategorySelect";
 import ImageUploader from "./ImageUploader";
+import { authClient } from "@/lib/auth-client";
 
 export default function AddBookForm() {
   const [loading, setLoading] = useState(false);
-
+ const { 
+        data: session, 
+       
+    } = authClient.useSession() 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     setLoading(true);
 
     try {
-      const formData = new FormData(e.currentTarget);
-
-      const imageFile = formData.get("image");
-
+      const form = new FormData(e.currentTarget);
+      const formData = Object.fromEntries(form.entries());
       // Image Upload (imgBB)
       // Next step we will upload this image and get imageURL
 
-      console.log(imageFile);
+      console.log(formData);
 
       const bookData = {
-        title: formData.get("title"),
-        author: formData.get("author"),
-        description: formData.get("description"),
-        deliveryFee: Number(formData.get("deliveryFee")),
-        category: formData.get("category"),
-
-        // temporary
-        image: "",
-
-        // Backend should set this
+        title: formData.title,
+        author: formData.author,
+        description: formData.description,
+        deliveryFee: formData.deliveryFee,
+        category: formData.category,
+        image: formData.image,
         status: "Pending Approval",
+        librarianId: session?.user?.id,
+        librarianName: session?.user?.name,
+        librarianEmail: session?.user?.email,
       };
 
       console.log(bookData);
 
-      /**
-       * Later
-       *
-       * const res = await fetch("/api/books",{
-       *   method:"POST",
-       *   headers:{
-       *      "Content-Type":"application/json"
-       *   },
-       *   body:JSON.stringify(bookData)
-       * })
-       */
-
+      const res = await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/api/books`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(bookData)
+      })
+      const data = await res.json()
+      console.log(data)
       toast.success("Ready for image upload.");
-
       e.target.reset();
     } catch (error) {
       console.log(error);
-
       toast.error("Something went wrong.");
     } finally {
       setLoading(false);
