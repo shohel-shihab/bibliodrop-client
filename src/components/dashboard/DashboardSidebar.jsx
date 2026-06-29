@@ -67,11 +67,7 @@ export default function DashboardSidebar({ session }) {
         href: "/profile",
         icon: CgProfile,
       },
-      {
-        title: "Settings",
-        href: "/settings",
-        icon: IoSettingsOutline,
-      },
+      
     ],
 
     librarian: [
@@ -100,11 +96,7 @@ export default function DashboardSidebar({ session }) {
         href: "/profile",
         icon: CgProfile,
       },
-      {
-        title: "Settings",
-        href: "/settings",
-        icon: IoSettingsOutline,
-      },
+     
     ],
 
     admin: [
@@ -138,11 +130,7 @@ export default function DashboardSidebar({ session }) {
         href: "/profile",
         icon: CgProfile,
       },
-      {
-        title: "Settings",
-        href: "/settings",
-        icon: IoSettingsOutline,
-      },
+     
     ],
   };
 
