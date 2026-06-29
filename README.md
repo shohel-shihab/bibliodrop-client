@@ -1,36 +1,205 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# 📚 BiblioDrop Client
 
-## Getting Started
+BiblioDrop is a modern library management and book delivery platform that connects readers with local libraries and independent book owners. The platform allows users to discover books, request doorstep delivery, manage reading history, and review books through an intuitive and responsive web application.
 
-First, run the development server:
+---
+
+## 🌐 Live Website
+
+**Client:** https://your-client-url.vercel.app
+
+**Server:** https://your-server-url.vercel.app
+
+---
+
+## ✨ Features
+
+### 👤 Authentication
+
+* Secure authentication with Better Auth
+* Email & Password Login
+* Google Sign-In
+* Protected Routes
+* Role-Based Access Control (Reader, Librarian, Admin)
+
+### 📚 Reader Features
+
+* Browse all available books
+* Search and filter books
+* View detailed book information
+* Request doorstep delivery
+* Stripe payment integration
+* Delivery history
+* Reading list
+* Book reviews and ratings
+* User dashboard with analytics
+
+### 📖 Librarian Features
+
+* Add new books
+* Update existing books
+* Delete books
+* View own inventory
+* Dashboard overview
+* Book status management
+
+### 🛠️ Admin Features
+
+* Manage all users
+* Approve or reject books
+* Publish or unpublish books
+* Delete books
+* Dashboard analytics
+* Manage pending book requests
+
+### 📊 Dashboard
+
+* Interactive charts using Recharts
+* Statistics overview
+* Delivery reports
+* Reading statistics
+* Book category visualization
+
+### 🎨 UI Features
+
+* Responsive design
+* Modern animations with Framer Motion
+* Beautiful dashboard
+* Mobile-friendly layout
+* Loading states
+* Toast notifications
+* Professional About page
+* Contact page
+* Custom 404 page
+
+---
+
+## 🚀 Technologies Used
+
+### Frontend
+
+* Next.js 16 (App Router)
+* React 19
+* Tailwind CSS
+* Framer Motion
+* HeroUI
+* React Icons
+* Recharts
+* React Hot Toast
+
+### Authentication
+
+* Better Auth
+
+### Payment
+
+* Stripe Checkout
+
+### Deployment
+
+* Vercel
+
+---
+
+## 📂 Project Structure
+
+```
+src/
+│
+├── app/
+├── components/
+├── hooks/
+├── lib/
+├── providers/
+├── utils/
+└── public/
+```
+
+---
+
+## ⚙️ Installation
+
+Clone the repository:
+
+```bash
+git clone https://github.com/your-username/bibliodrop-client.git
+```
+
+Go to the project folder:
+
+```bash
+cd bibliodrop-client
+```
+
+Install dependencies:
+
+```bash
+npm install
+```
+
+Create a `.env.local` file and add:
+
+```env
+NEXT_PUBLIC_SERVER_URL=
+NEXT_PUBLIC_BETTER_AUTH_URL=
+```
+
+Run the development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open:
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+```
+http://localhost:3000
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+---
 
-## Learn More
+## 🔒 Environment Variables
 
-To learn more about Next.js, take a look at the following resources:
+```env
+NEXT_PUBLIC_SERVER_URL=
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+NEXT_PUBLIC_BETTER_AUTH_URL=
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+---
 
-## Deploy on Vercel
+## 📱 Responsive Design
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+* Desktop
+* Tablet
+* Mobile
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+---
+
+## 🎯 Future Improvements
+
+* Wishlist functionality
+* Real-time notifications
+* Email notifications
+* Book recommendations
+* Advanced search filters
+* Dark mode
+* Multi-language support
+
+---
+
+## 👨‍💻 Author
+
+**Shohel Rana Shihab**
+
+Computer Science & Engineering Student
+
+Green University of Bangladesh
+
+GitHub: https://github.com/shohel-shihab
+
+---
+
+## 📄 License
+
+This project is developed for educational and portfolio purposes.
