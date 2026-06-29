@@ -1,69 +1,105 @@
-import OverviewCards from "@/components/dashboard/reader/overview/OverviewCards";
-import ReadingChart from "@/components/dashboard/reader/overview/ReadingChart";
-import RecentDeliveryTable from "@/components/dashboard/reader/overview/RecentDeliveryTable";
+"use client";
 
-export default function ReaderDashboardPage() {
+import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
+import { authClient } from "@/lib/auth-client";
+
+
+import UserOverviewCards from "@/components/dashboard/reader/UserOverviewCards";
+import UserPieChart from "@/components/dashboard/reader/UserPieChart";
+import UserStatsChart from "@/components/dashboard/reader/UserStatsChart";
+
+export default function UserDashboardPage() {
+  const { data: session } = authClient.useSession();
+
+  const [overview, setOverview] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    if (!session?.user?.email) return;
+
+    const fetchOverview = async () => {
+      try {
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_SERVER_URL}/api/dashboard/user/overview?email=${session.user.email}`
+        );
+
+        const data = await res.json();
+
+        if (data.success) {
+          setOverview(data);
+        }
+      } catch (error) {
+        console.log(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchOverview();
+  }, [session]);
+
+  if (loading) {
+    return (
+      <div className="flex h-[70vh] items-center justify-center">
+        <div className="h-12 w-12 animate-spin rounded-full border-4 border-violet-600 border-t-transparent"></div>
+      </div>
+    );
+  }
+
   return (
     <section className="space-y-8">
+
       {/* Page Header */}
-      <div>
+
+      <motion.div
+        initial={{ opacity: 0, y: -30 }}
+        animate={{ opacity: 1, y: 0 }}
+      >
         <h1 className="text-3xl font-bold text-gray-800">
-          Reader Dashboard 📚
+          User Dashboard
         </h1>
 
         <p className="mt-2 text-gray-500">
-          Welcome back! Here's a quick overview of your reading activity.
+          Welcome back! Here's an overview of your reading activity.
         </p>
+      </motion.div>
+
+      {/* Overview Cards */}
+
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+      >
+        <UserOverviewCards
+          stats={overview?.stats}
+        />
+      </motion.div>
+
+      {/* Charts */}
+
+      <div className="grid gap-8 lg:grid-cols-2">
+
+        <motion.div
+          initial={{ x: -40, opacity: 0 }}
+          animate={{ x: 0, opacity: 1 }}
+        >
+          <UserPieChart
+            data={overview?.pieChart}
+          />
+        </motion.div>
+
+        <motion.div
+          initial={{ x: 40, opacity: 0 }}
+          animate={{ x: 0, opacity: 1 }}
+        >
+          <UserStatsChart
+            stats={overview?.stats}
+          />
+        </motion.div>
+
       </div>
 
-      {/* Statistics */}
-      <OverviewCards />
-
-      {/* Chart + Recent Deliveries */}
-      <div className="grid gap-6 xl:grid-cols-3">
-        {/* Chart */}
-        <div className="xl:col-span-2 rounded-2xl border bg-white p-6 shadow-sm">
-          <ReadingChart />
-        </div>
-
-        {/* Quick Summary */}
-        <div className="rounded-2xl border bg-gradient-to-br from-violet-600 to-indigo-600 p-6 text-white shadow-sm">
-          <h2 className="text-xl font-bold">
-            Reading Goal
-          </h2>
-
-          <p className="mt-3 text-violet-100">
-            You've completed
-            <span className="mx-1 font-bold text-white">
-              18
-            </span>
-            books this year.
-          </p>
-
-          <div className="mt-6">
-            <div className="mb-2 flex justify-between text-sm">
-              <span>Progress</span>
-              <span>72%</span>
-            </div>
-
-            <div className="h-3 overflow-hidden rounded-full bg-violet-300">
-              <div className="h-full w-[72%] rounded-full bg-white"></div>
-            </div>
-          </div>
-
-          <p className="mt-5 text-sm text-violet-100">
-            Keep reading to achieve your yearly target of
-            <span className="font-semibold text-white">
-              {" "}25 books.
-            </span>
-          </p>
-        </div>
-      </div>
-
-      {/* Recent Delivery Table */}
-      <div className="rounded-2xl border bg-white p-6 shadow-sm">
-        <RecentDeliveryTable />
-      </div>
     </section>
   );
 }
