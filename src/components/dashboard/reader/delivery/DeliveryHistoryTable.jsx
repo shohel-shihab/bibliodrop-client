@@ -2,69 +2,128 @@
 
 import DeliveryHistoryRow from "./DeliveryHistoryRow";
 
-export default function DeliveryHistoryTable({ deliveries }) {
-  if (deliveries.length === 0) {
-    return (
-      <div className="rounded-2xl border border-dashed border-gray-300 bg-white py-20 text-center">
-        <h2 className="text-2xl font-bold text-gray-700">
-          No Delivery History
-        </h2>
 
-        <p className="mt-3 text-gray-500">
-          You haven't requested any book deliveries yet.
-        </p>
-      </div>
-    );
-  }
 
+export default function DeliveryHistoryTable({
+  deliveries,
+  setDeliveries,
+}) {
   return (
-    <div className="overflow-x-auto rounded-2xl border border-gray-200 bg-white shadow-sm">
-      <table className="min-w-full">
+    <div className="overflow-hidden rounded-2xl bg-white shadow">
 
-        {/* Table Header */}
+      {/* Desktop Table */}
 
-        <thead className="bg-violet-50">
-          <tr>
-            <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">
-              Book
-            </th>
+      <div className="hidden overflow-x-auto lg:block">
+        <table className="min-w-full">
 
-            <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">
-              Librarian
-            </th>
+          <thead className="bg-violet-600 text-white">
 
-            <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">
-              Delivery Fee
-            </th>
+            <tr>
 
-            <th className="px-6 py-4 text-left text-sm font-semibold text-gray-700">
-              Request Date
-            </th>
+              <th className="px-6 py-4 text-left">
+                Book Title
+              </th>
 
-            <th className="px-6 py-4 text-center text-sm font-semibold text-gray-700">
-              Status
-            </th>
+              <th className="px-6 py-4 text-center">
+                Delivery Fee
+              </th>
 
-            <th className="px-6 py-4 text-center text-sm font-semibold text-gray-700">
-              Action
-            </th>
-          </tr>
-        </thead>
+              <th className="px-6 py-4 text-center">
+                Request Date
+              </th>
 
-        {/* Table Body */}
+              <th className="px-6 py-4 text-center">
+                Status
+              </th>
 
-        <tbody>
+              <th className="px-6 py-4 text-center">
+                Actions
+              </th>
 
-          {deliveries.map((delivery) => (
-            <DeliveryHistoryRow
-              key={delivery._id}
-              delivery={delivery}
-            />
-          ))}
+            </tr>
 
-        </tbody>
+          </thead>
 
-      </table>
+          <tbody>
+
+            {deliveries.map((delivery) => (
+              <DeliveryHistoryRow
+                key={delivery._id}
+                delivery={delivery}
+                setDeliveries={setDeliveries}
+              />
+            ))}
+
+          </tbody>
+
+        </table>
+      </div>
+
+      {/* Mobile Cards */}
+
+      <div className="space-y-5 p-5 lg:hidden">
+
+        {deliveries.map((delivery) => (
+          <div
+            key={delivery._id}
+            className="rounded-2xl border p-5 shadow-sm"
+          >
+            <h2 className="text-lg font-bold text-gray-800">
+              {delivery.title}
+            </h2>
+
+            <div className="mt-4 space-y-2 text-sm text-gray-600">
+
+              <div className="flex justify-between">
+                <span>Delivery Fee</span>
+                <span className="font-semibold">
+                  ৳ {delivery.deliveryFee}
+                </span>
+              </div>
+
+              <div className="flex justify-between">
+                <span>Request Date</span>
+                <span>
+                  {new Date(
+                    delivery.requestDate
+                  ).toLocaleDateString()}
+                </span>
+              </div>
+
+              <div className="flex justify-between">
+                <span>Status</span>
+
+                <span
+                  className={`rounded-full px-3 py-1 text-xs font-semibold
+                  ${
+                    delivery.status === "Pending"
+                      ? "bg-yellow-100 text-yellow-700"
+                      : delivery.status === "Dispatched"
+                      ? "bg-blue-100 text-blue-700"
+                      : "bg-green-100 text-green-700"
+                  }`}
+                >
+                  {delivery.status}
+                </span>
+              </div>
+
+            </div>
+
+            <div className="mt-5">
+
+              <DeliveryHistoryRow
+                delivery={delivery}
+                setDeliveries={setDeliveries}
+                mobile
+              />
+
+            </div>
+
+          </div>
+        ))}
+
+      </div>
+
     </div>
   );
 }

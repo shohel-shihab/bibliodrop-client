@@ -1,21 +1,24 @@
 "use client";
 
 import Link from "next/link";
-import toast from "react-hot-toast";
 import Swal from "sweetalert2";
+import toast from "react-hot-toast";
+import { FaEye, FaTimesCircle } from "react-icons/fa";
 
 export default function DeliveryHistoryRow({
   delivery,
+  setDeliveries,
+  mobile = false,
 }) {
   const handleCancel = async () => {
     const result = await Swal.fire({
-      title: "Cancel Delivery Request?",
-      text: "This request will be cancelled.",
+      title: "Cancel Delivery?",
+      text: "Are you sure you want to cancel this delivery request?",
       icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: "#7c3aed",
-      cancelButtonColor: "#ef4444",
       confirmButtonText: "Yes, Cancel",
+      confirmButtonColor: "#7C3AED",
+      cancelButtonColor: "#EF4444",
     });
 
     if (!result.isConfirmed) return;
@@ -25,6 +28,7 @@ export default function DeliveryHistoryRow({
         `${process.env.NEXT_PUBLIC_SERVER_URL}/api/delivery-request/${delivery._id}`,
         {
           method: "DELETE",
+          credentials: "include",
         }
       );
 
@@ -33,9 +37,11 @@ export default function DeliveryHistoryRow({
       if (data.success) {
         toast.success("Delivery request cancelled.");
 
-        window.location.reload();
+        setDeliveries((prev) =>
+          prev.filter((item) => item._id !== delivery._id)
+        );
       } else {
-        toast.error(data.message);
+        toast.error(data.message || "Failed to cancel request.");
       }
     } catch (error) {
       console.log(error);
@@ -44,51 +50,55 @@ export default function DeliveryHistoryRow({
   };
 
   const badgeColor = {
-    Pending:
-      "bg-yellow-100 text-yellow-700",
-
-    Dispatched:
-      "bg-blue-100 text-blue-700",
-
-    Delivered:
-      "bg-green-100 text-green-700",
-
-    Cancelled:
-      "bg-red-100 text-red-700",
+    Pending: "bg-yellow-100 text-yellow-700",
+    Dispatched: "bg-blue-100 text-blue-700",
+    Delivered: "bg-green-100 text-green-700",
   };
 
+  if (mobile) {
+    return (
+      <div className="flex gap-3">
+
+        <Link
+          href={`/books/${delivery.bookId}`}
+          className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-violet-600 px-4 py-2 font-medium text-white transition hover:bg-violet-700"
+        >
+          <FaEye />
+          View Book
+        </Link>
+
+        {delivery.status === "Pending" && (
+          <button
+            onClick={handleCancel}
+            className="flex flex-1 items-center justify-center gap-2 rounded-xl bg-red-500 px-4 py-2 font-medium text-white transition hover:bg-red-600"
+          >
+            <FaTimesCircle />
+            Cancel
+          </button>
+        )}
+
+      </div>
+    );
+  }
+
   return (
-    <tr className="border-b last:border-none">
+    <tr className="border-b hover:bg-gray-50">
 
-      {/* Book */}
+      {/* Book Title */}
 
-      <td className="px-6 py-5">
-        <div>
-          <h3 className="font-semibold">
-            {delivery.title}
-          </h3>
-
-          <p className="text-sm text-gray-500">
-            ID: {delivery.bookId}
-          </p>
-        </div>
-      </td>
-
-      {/* Librarian */}
-
-      <td className="px-6 py-5">
-        {delivery.librarianEmail}
+      <td className="px-6 py-5 font-medium text-gray-800">
+        {delivery.title}
       </td>
 
       {/* Delivery Fee */}
 
-      <td className="px-6 py-5 font-semibold">
+      <td className="px-6 py-5 text-center">
         ৳ {delivery.deliveryFee}
       </td>
 
       {/* Request Date */}
 
-      <td className="px-6 py-5">
+      <td className="px-6 py-5 text-center">
         {new Date(
           delivery.requestDate
         ).toLocaleDateString()}
@@ -98,7 +108,7 @@ export default function DeliveryHistoryRow({
 
       <td className="px-6 py-5 text-center">
         <span
-          className={`rounded-full px-4 py-1 text-sm font-medium ${
+          className={`rounded-full px-4 py-1 text-sm font-semibold ${
             badgeColor[delivery.status]
           }`}
         >
@@ -106,23 +116,25 @@ export default function DeliveryHistoryRow({
         </span>
       </td>
 
-      {/* Action */}
+      {/* Actions */}
 
       <td className="px-6 py-5">
-        <div className="flex items-center justify-center gap-3">
+        <div className="flex justify-center gap-3">
 
           <Link
             href={`/books/${delivery.bookId}`}
-            className="rounded-lg bg-violet-600 px-4 py-2 text-sm text-white transition hover:bg-violet-700"
+            className="flex items-center gap-2 rounded-lg bg-violet-600 px-4 py-2 text-white transition hover:bg-violet-700"
           >
+            <FaEye />
             View
           </Link>
 
           {delivery.status === "Pending" && (
             <button
               onClick={handleCancel}
-              className="rounded-lg bg-red-500 px-4 py-2 text-sm text-white transition hover:bg-red-600"
+              className="flex items-center gap-2 rounded-lg bg-red-500 px-4 py-2 text-white transition hover:bg-red-600"
             >
+              <FaTimesCircle />
               Cancel
             </button>
           )}

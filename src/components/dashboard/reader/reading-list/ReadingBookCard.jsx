@@ -1,51 +1,77 @@
 "use client";
 
+import Link from "next/link";
 import Image from "next/image";
 import { motion } from "framer-motion";
-import { FaBookOpen, FaCalendarAlt } from "react-icons/fa";
+import {
+  FaBook,
+  FaUser,
+  FaTag,
+  FaMoneyBillWave,
+  FaEye,
+} from "react-icons/fa";
 
 export default function ReadingBookCard({ book }) {
   return (
     <motion.div
       whileHover={{
-        y: -6,
+        y: -8,
         scale: 1.02,
       }}
-      transition={{ duration: 0.25 }}
-      className="overflow-hidden rounded-2xl border border-gray-200 bg-white shadow-sm transition hover:shadow-xl"
+      transition={{
+        duration: 0.3,
+      }}
+      className="overflow-hidden rounded-2xl bg-white shadow-md transition hover:shadow-xl"
     >
-      {/* Book Cover */}
-      <div className="relative h-64 w-full overflow-hidden">
+      {/* Book Image */}
+
+      <div className="relative h-64 w-full">
         <Image
           src={book.image}
           alt={book.title}
           fill
-          className="object-cover transition duration-300 hover:scale-110"
+          className="object-cover"
         />
       </div>
 
       {/* Content */}
-      <div className="space-y-4 p-5">
-        <div>
-          <h2 className="line-clamp-1 text-xl font-bold text-gray-800">
-            {book.title}
-          </h2>
 
-          <p className="mt-1 text-sm text-gray-500">
-            by {book.author}
-          </p>
+      <div className="space-y-4 p-5">
+
+        {/* Title */}
+
+        <h2 className="line-clamp-1 text-xl font-bold text-gray-800">
+          {book.title}
+        </h2>
+
+        {/* Author */}
+
+        <div className="flex items-center gap-2 text-gray-600">
+          <FaUser className="text-violet-600" />
+          <span>{book.author}</span>
         </div>
 
         {/* Category */}
-        <div className="flex items-center justify-between">
-          <span className="rounded-full bg-violet-100 px-3 py-1 text-xs font-medium text-violet-700">
-            {book.category}
-          </span>
 
+        <div className="flex items-center gap-2 text-gray-600">
+          <FaTag className="text-violet-600" />
+          <span>{book.category}</span>
+        </div>
+
+        {/* Delivery Fee */}
+
+        <div className="flex items-center gap-2 text-gray-600">
+          <FaMoneyBillWave className="text-green-600" />
+          <span>৳ {book.deliveryFee}</span>
+        </div>
+
+        {/* Status */}
+
+        <div>
           <span
-            className={`rounded-full px-3 py-1 text-xs font-semibold ${
-              book.status === "Returned"
-                ? "bg-emerald-100 text-emerald-700"
+            className={`rounded-full px-4 py-1 text-sm font-semibold ${
+              book.status === "Delivered"
+                ? "bg-green-100 text-green-700"
                 : "bg-blue-100 text-blue-700"
             }`}
           >
@@ -53,19 +79,16 @@ export default function ReadingBookCard({ book }) {
           </span>
         </div>
 
-        {/* Delivery Date */}
-        <div className="flex items-center gap-2 text-sm text-gray-500">
-          <FaCalendarAlt />
-
-          <span>{book.deliveryDate}</span>
-        </div>
-
         {/* Button */}
-        <button className="flex w-full items-center justify-center gap-2 rounded-xl bg-violet-600 py-3 font-medium text-white transition hover:bg-violet-700">
-          <FaBookOpen />
 
+        <Link
+          href={`/books/${book._id}`}
+          className="mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-violet-600 px-4 py-3 font-semibold text-white transition hover:bg-violet-700"
+        >
+          <FaEye />
           View Details
-        </button>
+        </Link>
+
       </div>
     </motion.div>
   );

@@ -4,12 +4,11 @@ import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { authClient } from "@/lib/auth-client";
 
-
 import UserOverviewCards from "@/components/dashboard/reader/UserOverviewCards";
 import UserPieChart from "@/components/dashboard/reader/UserPieChart";
 import UserStatsChart from "@/components/dashboard/reader/UserStatsChart";
 
-export default function UserDashboardPage() {
+export default function ReaderDashboardPage() {
   const { data: session } = authClient.useSession();
 
   const [overview, setOverview] = useState(null);
@@ -21,7 +20,10 @@ export default function UserDashboardPage() {
     const fetchOverview = async () => {
       try {
         const res = await fetch(
-          `${process.env.NEXT_PUBLIC_SERVER_URL}/api/dashboard/user/overview?email=${session.user.email}`
+          `${process.env.NEXT_PUBLIC_SERVER_URL}/api/dashboard/reader/overview?email=${session.user.email}`,
+          {
+            credentials: "include",
+          }
         );
 
         const data = await res.json();
@@ -50,22 +52,22 @@ export default function UserDashboardPage() {
   return (
     <section className="space-y-8">
 
-      {/* Page Header */}
+      {/* Header */}
 
       <motion.div
         initial={{ opacity: 0, y: -30 }}
         animate={{ opacity: 1, y: 0 }}
       >
         <h1 className="text-3xl font-bold text-gray-800">
-          User Dashboard
+          Reader Dashboard
         </h1>
 
         <p className="mt-2 text-gray-500">
-          Welcome back! Here's an overview of your reading activity.
+          Welcome back! Here's a quick overview of your reading journey.
         </p>
       </motion.div>
 
-      {/* Overview Cards */}
+      {/* Quick Stats */}
 
       <motion.div
         initial={{ opacity: 0 }}
@@ -81,7 +83,7 @@ export default function UserDashboardPage() {
       <div className="grid gap-8 lg:grid-cols-2">
 
         <motion.div
-          initial={{ x: -40, opacity: 0 }}
+          initial={{ x: -50, opacity: 0 }}
           animate={{ x: 0, opacity: 1 }}
         >
           <UserPieChart
@@ -90,7 +92,7 @@ export default function UserDashboardPage() {
         </motion.div>
 
         <motion.div
-          initial={{ x: 40, opacity: 0 }}
+          initial={{ x: 50, opacity: 0 }}
           animate={{ x: 0, opacity: 1 }}
         >
           <UserStatsChart
